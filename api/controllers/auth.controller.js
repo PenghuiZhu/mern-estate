@@ -1,4 +1,18 @@
-export const signup = (req, res) =>{
+import User from "../models/user.model.js";
+import becryptjs from 'bcryptjs'
 
-    console.log(req.body);
+export const signup = async (req, res) =>{
+
+    const { username, email, password } = req.body;
+    const hashedPassword = becryptjs.hashSync(password, 10);
+    const newUser = new User({ username, email, password: hashedPassword})
+
+    try{
+        await newUser.save();
+        res.status(201).json('user created successfully')
+    } catch (error) {
+        res.status(500).json(error.message)
+    }
+    
+
 }
